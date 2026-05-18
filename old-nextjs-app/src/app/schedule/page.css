@@ -1,0 +1,133 @@
+.schedule-page {
+  /* Inherits global padding */
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.timetable-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow-x: auto;
+  box-shadow: var(--glass-shadow);
+}
+
+.timetable {
+  min-width: 800px;
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+}
+
+.timetable-header-cell {
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  background: rgba(0,0,0,0.02);
+  color: var(--text-secondary);
+}
+
+.timetable-header-cell:last-child {
+  border-right: none;
+}
+
+.time-column {
+  border-right: 1px solid var(--border-color);
+  background: rgba(0,0,0,0.02);
+}
+
+.time-slot-label {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.day-column {
+  border-right: 1px solid var(--border-color);
+  position: relative;
+  background: var(--bg-primary);
+}
+
+.day-column:last-child {
+  border-right: none;
+}
+
+.hour-slot {
+  height: 60px;
+  border-bottom: 1px dashed var(--border-color);
+  position: relative;
+}
+
+.hour-slot:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.schedule-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  transition: transform 0.2s;
+}
+
+.schedule-block:hover {
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+.schedule-block-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.schedule-block-time {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+.delete-block-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.2);
+  border: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.schedule-block:hover .delete-block-btn {
+  opacity: 1;
+}
+
+.delete-block-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
