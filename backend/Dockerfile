@@ -1,10 +1,13 @@
-# Build stage
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
-COPY . .
-RUN mvn clean package -DskipTests
+FROM eclipse-temurin:21-jdk
 
-# Run stage
-FROM eclipse-temurin:21-jre-alpine
-COPY --from=build /target/backend-0.0.1-SNAPSHOT.jar app.jar
+WORKDIR /app
+
+COPY . .
+
+RUN chmod +x mvnw
+
+RUN ./mvnw clean package -DskipTests
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "app.jar"]
+
+CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]
