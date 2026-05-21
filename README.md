@@ -13,7 +13,7 @@ An enterprise-grade, full-stack academic productivity ecosystem and study schedu
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Live Demos](#live-demos)
+2. [Live Project](#live-project)
 3. [Tech Stack](#tech-stack)
 4. [Core Features](#core-features)
 5. [Screenshots](#screenshots)
@@ -36,10 +36,9 @@ StudyFlow is designed to bridge the gap between task lists and calendar block sc
 
 ---
 
-## Live Demos
+## Live Project
 
-* **Frontend Client (Vercel):** [https://student-study-planner-seven.vercel.app](https://student-study-planner-seven.vercel.app)
-* **Backend API (Render):** [https://student-study-planner-backend.onrender.com](https://student-study-planner-backend.onrender.com)
+* **Live Project Link:** [https://student-study-planner-seven.vercel.app](https://student-study-planner-seven.vercel.app)
 
 ---
 
