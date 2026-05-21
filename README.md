@@ -88,16 +88,16 @@ StudyFlow is designed to bridge the gap between task lists and calendar block sc
 ## Screenshots
 
 ### Login Page
-![Login Page](https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1200&auto=format&fit=crop)
+![Login Page](docs/screenshots/login.png)
 
 ### Main Dashboard
-![Dashboard](https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop)
+![Dashboard](docs/screenshots/dashboard.png)
 
 ### Study Planner & Scheduler
-![Study Planner](https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1200&auto=format&fit=crop)
+![Study Planner](docs/screenshots/schedule.png)
 
 ### Analytics Dashboard
-![Analytics](https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop)
+![Analytics](docs/screenshots/progress.png)
 
 ---
 
