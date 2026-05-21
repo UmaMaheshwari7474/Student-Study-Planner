@@ -16,7 +16,7 @@ public class HomeController {
         response.put("status", "UP");
         response.put("service", "Student Study Planner API");
         response.put("message", "StudyFlow REST API is fully operational.");
-        response.put("frontendUrl", "https://student-study-planner-seven.vercel.app");
+        response.put("frontendUrl", "https://student-study-planner-beta.vercel.app");
         return ResponseEntity.ok(response);
     }
 }

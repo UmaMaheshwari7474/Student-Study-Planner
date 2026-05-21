@@ -38,7 +38,7 @@ StudyFlow is designed to bridge the gap between task lists and calendar block sc
 
 ## Live Project
 
-* **Live Project Link:** [https://student-study-planner-seven.vercel.app](https://student-study-planner-seven.vercel.app)
+* **Live Project Link:** [https://student-study-planner-beta.vercel.app](https://student-study-planner-beta.vercel.app)
 
 ---
 
@@ -220,7 +220,7 @@ JWT_SECRET=your_base64_encoded_hmac_sha_256_secret_key_at_least_256_bits_long
 JWT_EXPIRATION=86400000
 
 # CORS Allowed Client Domains
-CORS_ALLOWED_ORIGINS=http://localhost:5173,https://student-study-planner-seven.vercel.app
+CORS_ALLOWED_ORIGINS=http://localhost:5173,https://student-study-planner-beta.vercel.app
 ```
 
 ---
