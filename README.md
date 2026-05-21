@@ -326,7 +326,7 @@ The React SPA is deployed on Vercel. Static assets are distributed globally via 
 ```
 
 ### 2. Backend API (Render)
-The Spring Boot web service is deployed to Render using a multi-stage Docker build pattern matching the repository's [Dockerfile](file:///c:/Users/admin/OneDrive/文件/Student_Study_Planner/backend/Dockerfile). It spins up a Linux container environment, runs maven packaging, and launches the compiled JAR on port `8080`.
+The Spring Boot web service is deployed to Render using a multi-stage Docker build pattern matching the repository's [Dockerfile](backend/Dockerfile). It spins up a Linux container environment, runs maven packaging, and launches the compiled JAR on port `8080`.
 
 ### 3. PostgreSQL Database (Neon)
 The persistence layer relies on Neon PostgreSQL database cluster hosted on AWS, which utilizes autoscaling compute and serverless storage virtualization to minimize memory overhead while keeping query executions fast.
