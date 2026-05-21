@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, CheckSquare, Clock, ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import { Calendar, CheckSquare, Clock, ArrowRight, Sparkles, TrendingUp, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
@@ -7,6 +7,37 @@ export default function Dashboard() {
   const [subjects, setSubjects] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const quotes = [
+    { text: "Your day will be worthy when you make your time work for you, not against you. Focus on one task at hand.", author: "Focus & Efficiency" },
+    { text: "Today is a clean slate. Spend its hours wisely, and tonight you will rest with a sense of pride.", author: "Daily Action" },
+    { text: "Time is a student's most valuable currency. Spend it on focus, and it will pay dividends in success.", author: "Value Your Time" },
+    { text: "Make today worth remembering. A single hour of focused study is worth more than a day of distracted reading.", author: "Focused Study" },
+    { text: "The best way to predict your future is to create it today, one efficient hour at a time.", author: "Create Today" },
+    { text: "Procrastination makes easy things hard and hard things harder. Dominate your schedule today.", author: "Be Proactive" },
+    { text: "Yesterday is gone, tomorrow is a promise, but today is your opportunity to build the knowledge you want.", author: "Make it Count" },
+    { text: "Efficiency is doing things right; effectiveness is doing the right things. Align your tasks and conquer today.", author: "Smart Planning" },
+    { text: "Do something today that your future self will thank you for. Time is ticking, make it count!", author: "Future Self" },
+    { text: "You don't need more time, you just need to use the time you have more efficiently. Start small, but start now.", author: "Time Management" },
+    { text: "Success is built on daily habits. A worthy day starts with a single step of focused concentration.", author: "Habits of Success" },
+    { text: "Focus on being productive instead of busy. Protect your study time today from distractions.", author: "Productive Focus" },
+    { text: "Real study is not about how many hours you spend, but how much focus you put into those hours.", author: "Quality Study" },
+    { text: "Every minute you spend planning saves ten minutes in execution. Structure your day and make it worthy.", author: "Efficiency First" },
+    { text: "Time flies, but you are the pilot. Direct your attention to your priorities today.", author: "Take Control" },
+    { text: "Make your present hours worthy. The effort you put in today is the foundation for your goals tomorrow.", author: "Foundation Building" }
+  ];
+
+  const getDailyQuote = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    const index = dayOfYear % quotes.length;
+    return quotes[index];
+  };
+
+  const dailyQuote = getDailyQuote();
 
   useEffect(() => {
     fetchData();
@@ -65,6 +96,21 @@ export default function Dashboard() {
           Keep it up!
         </div>
       </header>
+
+      {/* Daily Motivational Quote Banner */}
+      <div className="glass-panel p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-indigo-600 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className="p-3 bg-indigo-100 text-indigo-700 rounded-xl shrink-0 mt-1">
+          <Quote size={20} />
+        </div>
+        <div className="space-y-1">
+          <p className="text-slate-700 font-bold text-lg leading-relaxed italic">
+            "{dailyQuote.text}"
+          </p>
+          <p className="text-xs font-black text-indigo-600 uppercase tracking-wider">
+            — {dailyQuote.author}
+          </p>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">

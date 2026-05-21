@@ -8,50 +8,152 @@ export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeReminder, setActiveReminder] = useState(null);
   const [notifiedTasks, setNotifiedTasks] = useState(new Set());
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'Upcoming Study Session', message: 'Math session starts in 15 mins', type: 'info', time: '10:30 AM', icon: Clock },
-    { id: 2, title: 'Task Completed', message: 'You finished "Physics Revision"', type: 'success', time: '09:15 AM', icon: CheckCircle2 },
-    { id: 3, title: 'Deadline Alert', message: 'History project due tomorrow!', type: 'warning', time: 'Yesterday', icon: AlertCircle }
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [dismissedNotifs, setDismissedNotifs] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dismissed_notifications');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const getLocalDateString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
-    const checkReminders = async () => {
+    const fetchAndGenerateNotifications = async () => {
+      if (!user) return;
       try {
-        const res = await fetch('/api/tasks');
-        if (res.ok) {
-          const tasks = await res.json();
+        const [tasksRes, subjectsRes, calendarRes] = await Promise.all([
+          fetch('/api/tasks'),
+          fetch('/api/subjects'),
+          fetch('/api/calendar')
+        ]);
+
+        if (tasksRes.ok && subjectsRes.ok && calendarRes.ok) {
+          const tasks = await tasksRes.json();
+          const subjects = await subjectsRes.json();
+          const calendar = await calendarRes.json();
+
+          const subjectMap = {};
+          subjects.forEach(s => {
+            subjectMap[s.id] = s.name;
+          });
+
           const now = new Date();
-          const todayStr = now.toISOString().split('T')[0];
+          const todayStr = getLocalDateString();
+          
+          const tomorrowDate = new Date();
+          tomorrowDate.setDate(now.getDate() + 1);
+          const tomorrowStr = `${tomorrowDate.getFullYear()}-${String(tomorrowDate.getMonth() + 1).padStart(2, '0')}-${String(tomorrowDate.getDate()).padStart(2, '0')}`;
+
+          const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const todayDayOfWeek = daysOfWeek[now.getDay()];
           const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
+          const dynamicNotifs = [];
+
+          // 1. Task Reminders and Deadlines
           tasks.forEach(task => {
+            const subjectName = subjectMap[task.subjectId] || 'Subject';
+            
+            // Check for real-time active popups
             if (!task.completed && task.date === todayStr && task.time && !notifiedTasks.has(task.id)) {
               if (task.time === currentTime) {
                 setActiveReminder(task);
                 setNotifiedTasks(prev => new Set(prev).add(task.id));
-                setNotifications(prev => [{
-                  id: Date.now(),
-                  title: 'Task Reminder',
-                  message: `Time for: ${task.title}`,
-                  type: 'warning',
-                  time: 'Just now',
-                  icon: Clock
-                }, ...prev]);
               }
             }
+
+            if (!task.completed) {
+              if (task.date === todayStr) {
+                dynamicNotifs.push({
+                  id: `task_due_${task.id}`,
+                  title: 'Task Due Today',
+                  message: `"${task.title}" (${subjectName}) is due today!`,
+                  type: 'warning',
+                  time: task.time || 'Today',
+                  icon: AlertCircle
+                });
+              } else if (task.date === tomorrowStr) {
+                dynamicNotifs.push({
+                  id: `task_tomorrow_${task.id}`,
+                  title: 'Task Due Tomorrow',
+                  message: `"${task.title}" (${subjectName}) is due tomorrow.`,
+                  type: 'info',
+                  time: 'Tomorrow',
+                  icon: Clock
+                });
+              } else if (task.date < todayStr) {
+                dynamicNotifs.push({
+                  id: `task_overdue_${task.id}`,
+                  title: 'Overdue Task Alert',
+                  message: `"${task.title}" (${subjectName}) was due on ${task.date}.`,
+                  type: 'error',
+                  time: 'Overdue',
+                  icon: AlertCircle
+                });
+              }
+            } else {
+              // Completed tasks
+              dynamicNotifs.push({
+                id: `task_completed_${task.id}`,
+                title: 'Task Completed',
+                message: `You finished "${task.title}"!`,
+                type: 'success',
+                time: 'Recent',
+                icon: CheckCircle2
+              });
+            }
           });
+
+          // 2. Upcoming Study Sessions today
+          calendar.forEach(block => {
+            if (block.day === todayDayOfWeek) {
+              const subjectName = subjectMap[block.subjectId] || 'Subject';
+              dynamicNotifs.push({
+                id: `session_${block.id}`,
+                title: 'Study Session Today',
+                message: `You have ${subjectName} scheduled from ${block.startTime} to ${block.endTime}.`,
+                type: 'info',
+                time: block.startTime,
+                icon: Clock
+              });
+            }
+          });
+
+          // Filter out dismissed notifications
+          const filteredNotifs = dynamicNotifs.filter(n => !dismissedNotifs.has(n.id));
+          setNotifications(filteredNotifs);
         }
-      } catch (error) {
-        console.error("Reminder check failed", error);
+      } catch (err) {
+        console.error("Failed to fetch notification data", err);
       }
     };
 
-    const interval = setInterval(checkReminders, 30000);
-    checkReminders();
+    fetchAndGenerateNotifications();
+    const interval = setInterval(fetchAndGenerateNotifications, 30000);
     return () => clearInterval(interval);
-  }, [notifiedTasks]);
+  }, [user, dismissedNotifs, notifiedTasks]);
 
-  const clearNotifications = () => setNotifications([]);
+  const clearNotifications = () => {
+    const idsToDismiss = notifications.map(n => n.id);
+    const newDismissed = new Set(dismissedNotifs);
+    idsToDismiss.forEach(id => newDismissed.add(id));
+    setDismissedNotifs(newDismissed);
+    try {
+      localStorage.setItem('dismissed_notifications', JSON.stringify(Array.from(newDismissed)));
+    } catch (e) {
+      console.error(e);
+    }
+    setNotifications([]);
+  };
 
   return (
     <header className="h-16 flex items-center justify-between px-8 bg-white/50 backdrop-blur-sm border-b border-slate-100 sticky top-0 z-10">

@@ -60,8 +60,21 @@ export default function Tasks() {
     setIsModalOpen(true);
   };
 
+  const getLocalDateString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const todayStr = getLocalDateString();
+    if (date < todayStr) {
+      alert("Cannot set task due date in the past.");
+      return;
+    }
     const taskData = { title, subjectId, date, time, type, priority };
     try {
       const url = editingTask ? `/api/tasks/${editingTask.id}` : "/api/tasks";
@@ -243,7 +256,7 @@ export default function Tasks() {
                   </div>
                   <div>
                     <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Due Date</label>
-                    <input required type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-bold text-slate-700" />
+                    <input required type="date" min={getLocalDateString()} value={date} onChange={e => setDate(e.target.value)} className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all font-bold text-slate-700" />
                   </div>
                 </div>
                 <div>
